@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Tricolor com Cronômetro</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-image: url('fundo.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: -1;
+    }
+
+    h1 { color: #cc0000; }
+    .question { margin: 2rem 0; }
+    button {
+      margin: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: #cc0000;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    #result, #timer {
+      margin-top: 2rem;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Quiz Tricolor Paulista 🔴⚪⚫</h1>
+  <div id="timer">⏳ Tempo restante: <span id="countdown">60</span> segundos</div>
+
+  <div class="question" id="q1">
+    <p>Em que ano o São Paulo foi fundado?</p>
+    <button onclick="responder(1, 'a')">1930</button>
+    <button onclick="responder(1, 'b')">1945</button>
+    <button onclick="responder(1, 'c')">1920</button>
+  </div>
+
+  <div class="question" id="q2">
+    <p>Qual jogador é conhecido como o “M1to” do São Paulo?</p>
+    <button onclick="responder(2, 'a')">Raí</button>
+    <button onclick="responder(2, 'b')">Rogério Ceni</button>
+    <button onclick="responder(2, 'c')">Careca</button>
+  </div>
+
+  <div class="question" id="q3">
+    <p>Quantos títulos mundiais o São Paulo conquistou?</p>
+    <button onclick="responder(3, 'a')">2</button>
+    <button onclick="responder(3, 'b')">3</button>
+    <button onclick="responder(3, 'c')">0</button>
+  </div>
+
+  <div id="result"></div>
+
+  <script>
+    const respostas = { 1: 'a', 2: 'b', 3: 'b' };
+    let pontuacao = 0;
+    let respondidas = {};
+    let tempo = 60;
+
+    const countdownEl = document.getElementById('countdown');
+    const resultEl = document.getElementById('result');
+
+    const cronometro = setInterval(() => {
+      tempo--;
+      countdownEl.textContent = tempo;
+      if (tempo === 0) {
+        clearInterval(cronometro);
+        encerrarQuiz();
+      }
+    }, 1000);
+
+    function responder(q, r) {
+      if (respondidas[q]) return;
+      respondidas[q] = true;
+      if (respostas[q] === r) {
+        pontuacao++;
+        document.getElementById('q' + q).style.color = 'lightgreen';
+      } else {
+        document.getElementById('q' + q).style.color = 'crimson';
+      }
+
+      if (Object.keys(respondidas).length === 3) {
+        clearInterval(cronometro);
+        encerrarQuiz();
+      }
+    }
+
+    function encerrarQuiz() {
+      resultEl.innerText = `⏰ Fim do quiz! Você acertou ${pontuacao} de 3 perguntas!`;
+      document.querySelectorAll('button').forEach(btn => btn.disabled = true);
+    }
+  </script>
+</body>
+</html>
+
